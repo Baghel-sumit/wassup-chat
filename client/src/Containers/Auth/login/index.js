@@ -1,11 +1,28 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import InputBox from '../../../Components/inputBox';
+import { userLogin } from '../../../Services/Auth';
 
 const Login = () => {
+  const [isBtnLoading, setIsBtnLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const details = Object.fromEntries(new FormData(e.target));
+    try {
+      setIsBtnLoading(true);
+      const result = await userLogin(details);
+      setIsBtnLoading(false);
+      if (result?.status === 'Success') {
+        localStorage.setItem('token', result.token);
+        navigate('/showChat');
+      } else {
+        console.log(result.message);
+      }
+    } catch (error) {
+      console.log({ error });
+    }
   }
 
   return (
@@ -41,7 +58,9 @@ const Login = () => {
                             </div>
                         </div>
                     </div>
-                    <button type="submit" className="w-full text-white bg-primary hover:opacity-7 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary">Login</button>
+                    <button type="submit" className="w-full text-white bg-primary hover:opacity-7 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-60 disabled:cursor-not-allowed dark:bg-primary" disabled={isBtnLoading}>
+                      {isBtnLoading ? 'Logging...' : 'Login'}
+                    </button>
                     <p className="text-sm text-center text-gray-500 dark:text-white">
                         Don’t have an account yet? <Link to="/auth/signup" className="font-medium text-primary hover:underline dark:text-primary">Create New</Link>
                     </p>

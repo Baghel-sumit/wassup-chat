@@ -4,12 +4,12 @@ import Chat from './Containers/Chat';
 import Login from './Containers/Auth/login';
 import Signup from './Containers/Auth/signup';
 import ShowChat from './Containers/Chat/showChats';
+import AuthHandler from './Components/authHandler';
 
 const App = () => {
-  
-
   return (
     <BrowserRouter>
+      <AuthHandler />
       <Routes>
         <Route path='/auth'>
           <Route path='login' element={<Login />} />
@@ -17,8 +17,8 @@ const App = () => {
           <Route path='*' element={<Navigate to='auth/login' />} />
         </Route>
         <Route path='/chat' element={<Chat />} />
-        <Route path='/showChat' element={<ShowChat />} />
-        <Route path='*' element={<Navigate to='auth/login' />} />
+        <Route path='/' element={<ShowChat />} />
+        <Route path='*' element={<Navigate to='/' />} />
       </Routes>
     </BrowserRouter>
   );
