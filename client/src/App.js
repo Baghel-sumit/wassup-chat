@@ -1,48 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { socket } from './Services/socket';
-import { ConnectionState } from './Components/ConnectionState';
-import { ConnectionManager } from './Components/ConnectionManager';
-import { Events } from "./Components/Events";
-import { MyForm } from './Components/MyForm';
-
+import React from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import Chat from './Containers/Chat';
+import Login from './Containers/Auth/login';
+import Signup from './Containers/Auth/signup';
+import ShowChat from './Containers/Chat/showChats';
 
 const App = () => {
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [fooEvents, setFooEvents] = useState([]);
-
-  useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
-    }
-
-    function onDisconnect() {
-      setIsConnected(false);
-    }
-
-    function onFooEvent(value) {
-      setFooEvents(previous => [...previous, value]);
-    }
-
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('foo', onFooEvent);
-
-    return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('foo', onFooEvent);
-    };
-  }, []);
-
+  
 
   return (
-    <div className="App">
-      <ConnectionState isConnected={ isConnected } />
-      <Events events={ fooEvents } />
-      <ConnectionManager />
-      <MyForm />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/auth'>
+          <Route path='login' element={<Login />} />
+          <Route path='signup' element={<Signup />} />
+          <Route path='*' element={<Navigate to='auth/login' />} />
+        </Route>
+        <Route path='/chat' element={<Chat />} />
+        <Route path='/showChat' element={<ShowChat />} />
+        <Route path='*' element={<Navigate to='auth/login' />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

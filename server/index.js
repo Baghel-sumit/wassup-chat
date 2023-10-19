@@ -2,6 +2,7 @@ const { createServer } = require('http');
 const express = require('express');
 const cors = require('cors');
 const { Server } = require('socket.io');
+require('dotenv').config();
 
 const app = express();
 const httpServer = createServer(app);
@@ -20,7 +21,6 @@ io.on('connection', (socket) => {
 
   socket.on('sendMessage', (message) => {
     io.emit('foo', message);
-    console.log({ message });
   });
 
   socket.on('disconnect', () => {
@@ -28,7 +28,9 @@ io.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(3000, ()=> {
-  console.log('Server is running on port : 3000');
+const port = process.env.LOCAL_PORT || 5000;
+
+httpServer.listen(port, ()=> {
+  console.log(`Server is running on port : ${port}`);
 })
 
