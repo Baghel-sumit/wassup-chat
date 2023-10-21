@@ -16,12 +16,12 @@ const ShowChat = () => {
     }
 
     const onError = (err) => {
-      console.log({ err })
+      console.log('Received error:', err);
     }
-
+    socket.on('error', onError);
+    
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('error', onError);
 
     return () => {
       socket.off('connect', onConnect);

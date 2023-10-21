@@ -4,11 +4,9 @@ import ChatDetails from '../../Components/chatDetails';
 import { socket } from '../../Services/socket';
 import UserChats from './userChats';
 import ShowUsers from './showUsers';
-import { getListChats } from '../../Services/Users';
-
-const hostEmail = localStorage.email;
 
 const MainSection = () => {
+  const hostEmail = localStorage.getItem('email');
   const [userChatsList, setUserChatsList] = useState([]);
   const [selectedChat, setSelectedChat] = useState({ details: {}, activeIndex: '', texts: [] });
   const [isShowUsersActive, setIsShowUsersActive] = useState(false);
@@ -20,10 +18,30 @@ const MainSection = () => {
     setSelectedChat({ details: {}, sender: senderEmail, activeIndex: index, texts: chat?.texts || [] });
   }
 
+  const onClickUser = (user) => {
+    const senderEmail = user.email;
+    socket.emit('join', { senderEmail, hostEmail });
+    setSelectedChat({ details: {}, sender: senderEmail, activeIndex: -1, texts: [] });
+    setIsShowUsersActive(false);
+  }
+
   useEffect(()=> {
-    const handleTexts = (messages=[]) => {
-      setSelectedChat(prev => ({ ...prev, texts: messages }));
-      setIsSendLoading(false);
+    const handleTexts = ({ isMessages=false, res }) => {
+      if (isMessages && Object.keys(res).length) {
+        if (userChatsList.length) {
+          const list = userChatsList?.map((item)=> {
+            if (item._id === res?._id) {
+              item = res;
+            }
+            return item;
+          });
+          setUserChatsList(list);
+        }
+        setSelectedChat(prev => ({ ...prev, texts: res?.texts }));
+        setIsSendLoading(false);
+      } else if (!isMessages) {
+        setUserChatsList(res);
+      }
     }
     socket.on('sendMessages', handleTexts);
 
@@ -33,21 +51,16 @@ const MainSection = () => {
   }, []);
 
   useEffect(()=> {
-    const syncChats = async () => {
-      const result = await getListChats();
-      if (result.status === 'Success') {
-        setUserChatsList(result.body);
-      }
-    }
+    if (!hostEmail) return;
 
-    syncChats();
-  }, [])
+    socket.emit('onLoad', hostEmail);
+  }, [hostEmail]);
 
   return (
     <div className="h-[87%] flex flex-row justify-between bg-gray-700">
       <div className="flex flex-col w-2/5 border-r-2 border-gray-900 max-h-full overflow-x-hidden overflow-y-auto relative">
         {isShowUsersActive ? (
-          <ShowUsers />
+          <ShowUsers onSelectUser={onClickUser} />
         ) : (
           <UserChats
             chats={userChatsList}

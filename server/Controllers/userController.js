@@ -92,7 +92,6 @@ const createUser = async (req, res) => {
     delete updatedUser.__v;
 
     const token = jwt.sign({ userEmail }, process.env.ACCESS_TOKEN, { expiresIn: '1h' });
-    console.log('success', { updatedUser });
     res.status(200).json({
       status: 'Success',
       token,

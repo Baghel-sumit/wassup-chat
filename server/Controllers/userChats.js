@@ -3,29 +3,26 @@ const userChats = require('../Database/userChatModel');
 const getUserChats = async (composers) => {
   try {
     const chats = await userChats.findOne({ composers: { $all: composers } });
-    return chats.texts || [];
+    return chats || {};
   } catch (error) {
     throw new Error(error.message)
   }
 };
 
-const getAllChats = async (req, res) => {
-  const { userEmail } = req.user;
+const getAllChats = async (userEmail) => {
   try {
-    const allChats = await userChats.find({
-      composers: userEmail
+    const chatsToUpdate = await userChats.find({ composers: userEmail });
+
+    const updatePromises = chatsToUpdate.map(async (chat) => {
+      chat.activeUsers.push(userEmail);
+      return chat.save();
     });
 
-    res.status(200).json({
-      status: 'Success',
-      body: allChats || []
-    })
+    await Promise.all(updatePromises);
+
+    return chatsToUpdate;
   } catch (error) {
-    res.status(500).json({
-      status: 'Failed',
-      message: error?.message || 'failed to list chats',
-      error
-    })
+    throw new Error(error.message);
   }
 }
 
@@ -37,11 +34,11 @@ const saveText = async ({ composers, text, composerEmail }) => {
       const newTexts = await userChats.create({
         composers, texts: [ { ...textDetails } ]
       });
-      return newTexts.texts;
+      return newTexts;
     } else {
       chats.texts.push(textDetails);
       await chats.save();
-      return chats.texts;
+      return chats;
     }
   } catch (error) {
     throw new Error(error.message);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ChatCard from '../../Components/chatCard'
 import { getListUsers } from '../../Services/Users';
 
-const ShowUsers = () => {
+const ShowUsers = ({ onSelectUser }) => {
   const [allUsers, setAllUsers] = useState([]);
 
   useEffect(()=> {
@@ -15,10 +15,6 @@ const ShowUsers = () => {
 
     syncUsers();
   }, []);
-
-  const onSelectUser = (user) => {
-    console.log({ user });
-  }
 
   return (
     <>

@@ -9,13 +9,14 @@ const textSchema = new Schema({
     type: String,
     required: true
   }
-})
+});
 
 const userChatSchema = new Schema({
   isGroup: {
     type: Boolean,
     default: false
   },
+  activeUsers: [String],
   composers: [String],
   texts: [textSchema]
 })

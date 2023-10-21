@@ -1,9 +1,9 @@
 import React from 'react'
 import ChatCard from '../../Components/chatCard';
 
-const hostEmail = localStorage.email;
 
 const UserChats = ({ chats, selectedChat, onClickChat }) => {
+  const hostEmail = localStorage.getItem('email');
   const getChatName = (chat) => {
     const senderEmail = chat.composers.find((item)=> item.toLowerCase() !== hostEmail.toLowerCase());
     return senderEmail;

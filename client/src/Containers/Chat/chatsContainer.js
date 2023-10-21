@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TextCard from '../../Components/textCard'
 import { socket } from '../../Services/socket';
 
@@ -13,9 +13,18 @@ const ChatsContainer = ({ chatTexts=[], hostEmail, senderEmail, isSendLoading, s
     socket.emit('sendText', { composers: [ hostEmail, senderEmail ], ...textMessage });
   }
 
+  const scrollToBottom = () => {
+    const scrollableElement = document.getElementById('scrollableElement');
+    scrollableElement.scrollTop = scrollableElement.scrollHeight;
+  };
+
+  useEffect(()=> {
+    scrollToBottom();
+  }, [chatTexts]);
+
   return (
     <div className="w-full px-5 flex flex-col justify-between">
-      <div className="flex flex-col mt-5 max-h-full overflow-x-hidden overflow-y-auto">
+      <div className="flex flex-col mt-5 max-h-full overflow-x-hidden overflow-y-auto" id='scrollableElement'>
         {chatTexts.map((item, index)=> (
           <TextCard
             key={index}
