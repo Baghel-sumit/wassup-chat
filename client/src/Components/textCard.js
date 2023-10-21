@@ -2,15 +2,15 @@ import React from 'react'
 
 const TextCard = ({ text, imgSrc, isLeft }) => {
   return (
-    <div class={`flex justify-${isLeft ? 'start' : 'end'} mb-4`}>
+    <div className={`flex ${isLeft ? 'justify-start w-fit' : 'justify-end'} mb-4`}>
       <div
-        class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
+        className={`mr-2 py-3 px-4 bg-blue-400 ${!isLeft ? 'rounded-bl-3xl rounded-tl-3xl rounded-tr-xl' : 'rounded-br-3xl rounded-tr-3xl rounded-tl-xl'} text-white`}
       >
         {text}
       </div>
       <img
         src={imgSrc || "https://source.unsplash.com/vpOeXr5wmR4/600x600"}
-        class="object-cover h-8 w-8 rounded-full"
+        className="object-cover h-8 w-8 rounded-full my-auto float-left"
         alt=""
       />
     </div>

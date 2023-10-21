@@ -1,8 +1,12 @@
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
+const tokenDecoder = (token) => {
+    return jwt.verify(token, process.env.ACCESS_TOKEN);
+}
+
 const verifyToken = (req, res, next) =>{
-    const token = req.headers.authToken;
+    const token = req.headers['auth-token'];
     
     if(token === null){
         
@@ -13,8 +17,7 @@ const verifyToken = (req, res, next) =>{
     }
 
     try{
-        
-        const decode = jwt.verify(token, process.env.ACCESS_TOKEN);
+        const decode = tokenDecoder(token);
 
         req.user = decode;
 
@@ -28,4 +31,4 @@ const verifyToken = (req, res, next) =>{
     return next();
 }
 
-module.exports = verifyToken;
+module.exports = { verifyToken, tokenDecoder };

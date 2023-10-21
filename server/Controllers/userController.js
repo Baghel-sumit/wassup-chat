@@ -23,6 +23,23 @@ const getUserDetails = async (req, res) => {
   }
 };
 
+const getListUsers = async (req, res) => {
+  try {
+    const users = await User.find().select('-password -__v');
+    
+    res.status(200).json({
+      status: 'Success',
+      body: users
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: 'Failed',
+      message: error?.message || 'failed to list users',
+      error
+    })
+  }
+}
+
 const userLogin = async (req, res) => {
   const { userEmail, password } = req.body;
   try {
@@ -53,11 +70,10 @@ const userLogin = async (req, res) => {
       error
     })
   }
-}
+};
 
 const createUser = async (req, res) => {
   const { name, userEmail, password } = req.body;
-  console.log('i am called', { name, userEmail, password });
   try {
     const user = await User.findOne({ email: userEmail });
     if (user?.email) {
@@ -92,6 +108,6 @@ const createUser = async (req, res) => {
       error
     })
   }
-}
+};
 
-module.exports = { getUserDetails, userLogin, createUser };
+module.exports = { getUserDetails, userLogin, createUser, getListUsers };

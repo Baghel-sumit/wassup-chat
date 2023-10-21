@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import InputBox from '../../../Components/inputBox';
 import { userLogin } from '../../../Services/Auth';
 
-const Login = () => {
+const Login = ({ goToSignUp }) => {
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -16,6 +16,7 @@ const Login = () => {
       setIsBtnLoading(false);
       if (result?.status === 'Success') {
         localStorage.setItem('token', result.token);
+        localStorage.setItem('email', result.body._doc.email);
         navigate('/showChat');
       } else {
         console.log(result.message);
@@ -54,7 +55,7 @@ const Login = () => {
                               <input id="remember" aria-describedby="remember" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 dark:bg-gray-700 dark:border-gray-600 dark:ring-offset-gray-800" required=""/>
                             </div>
                             <div className="ml-3 text-sm">
-                              <label for="remember" className="text-gray-500 dark:text-gray-300">Remember me</label>
+                              <label htmlFor="remember" className="text-gray-500 dark:text-gray-300">Remember me</label>
                             </div>
                         </div>
                     </div>
@@ -62,7 +63,7 @@ const Login = () => {
                       {isBtnLoading ? 'Logging...' : 'Login'}
                     </button>
                     <p className="text-sm text-center text-gray-500 dark:text-white">
-                        Don’t have an account yet? <Link to="/auth/signup" className="font-medium text-primary hover:underline dark:text-primary">Create New</Link>
+                        Don’t have an account yet? <span className="font-medium text-primary cursor-pointer hover:underline dark:text-primary" onClick={goToSignUp}>Create New</span>
                     </p>
                 </form>
             </div>

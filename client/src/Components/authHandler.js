@@ -9,11 +9,11 @@ const AuthHandler = () => {
     const handleAuth = () => {
       const token = localStorage?.token;
       if (!token) {
-        navigate('/auth/login');
+        navigate('/auth');
       }
     }
     handleAuth();
-  },[pathname]);
+  },[pathname, navigate]);
 
   return (
     <></>

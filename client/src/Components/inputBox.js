@@ -4,7 +4,7 @@ const InputBox = ({ name, type, placeholder, value, onChange, label, isRequired=
   return (
     <div>
       <label 
-        for={name} 
+        htmlFor={name} 
         className={`block mb-2 text-sm font-medium text-gray-900 dark:text-white ${labelClass || ''}`}
       >
         {label}

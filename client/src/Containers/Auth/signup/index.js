@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import InputBox from '../../../Components/inputBox';
 import { createUserAccount } from '../../../Services/Auth';
 
-const Signup = () => {
+const Signup = ({ goToLogin }) => {
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -16,6 +16,7 @@ const Signup = () => {
       setIsBtnLoading(false);
       if (result?.status === 'Success') {
         localStorage.setItem('token', result.token);
+        localStorage.setItem('email', result.body._doc.email);
         navigate('/showChat');
       } else {
         console.log(result.message);
@@ -59,7 +60,7 @@ const Signup = () => {
                       {isBtnLoading ? 'Creating...' : 'Create Account'}
                     </button>
                     <p className="text-sm text-center text-gray-500 dark:text-white">
-                      Already have an account? <Link to="/auth/login" className="font-medium text-primary hover:underline dark:text-primary">Login</Link>
+                      Already have an account? <span className="font-medium text-primary cursor-pointer hover:underline dark:text-primary" onClick={goToLogin} >Login</span>
                     </p>
                 </form>
             </div>
